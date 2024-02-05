@@ -1,0 +1,3 @@
+FROM httpd:2.4.58-bookworm
+
+COPY ./configs/http/httpd.conf /usr/local/apache2/conf/

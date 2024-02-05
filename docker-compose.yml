@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+    backend:
+        image: medhydohoucpe/api:1.0
+        networks:
+          - app-network
+        depends_on:
+          - database
+        environment:
+          DATABASE_URL: database
+          DATABASE_PORT: 5432
+          DATABASE_USER: usr
+          DATABASE_PASSWORD: pwd
+          DATABASE_NAME: db
+
+    database:
+        image: medhydohoucpe/database:1.0
+        networks:
+          - app-network
+        volumes:
+          - /tmp/tp-devops/medhy-dohou/postgres:/var/lib/data/postgres
+        environment:
+          POSTGRES_USER: usr
+          POSTGRES_DB: db
+          POSTGRES_PASSWORD: pwd
+
+    httpd:
+        image: medhydohoucpe/httpd:1.0
+        ports:
+          - 80:80
+        networks:
+          - app-network
+        depends_on:
+          - backend
+
+networks:
+    app-network:

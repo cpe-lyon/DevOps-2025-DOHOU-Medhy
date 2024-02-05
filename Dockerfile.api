@@ -1,0 +1,14 @@
+FROM maven:3.9.6-sapmachine-21 AS build
+ENV MYAPP_HOME /opt/app
+
+WORKDIR ${MYAPP_HOME}
+COPY backend-api ${MYAPP_HOME} 
+RUN mvn package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+
+ENV MYAPP_HOME /opt/app
+WORKDIR $MYAPP_HOME
+COPY --from=build $MYAPP_HOME/target/*.jar $MYAPP_HOME/api.jar
+
+ENTRYPOINT java -jar api.jar
