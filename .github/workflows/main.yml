@@ -44,6 +44,7 @@ jobs:
         with:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.api
+          push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/api:latest
 
       - name: Build image and push database
@@ -51,6 +52,7 @@ jobs:
         with:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.db
+          push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/database:latest
 
       - name: Build image and push httpd
@@ -58,4 +60,5 @@ jobs:
         with:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.http
+          push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd:latest
