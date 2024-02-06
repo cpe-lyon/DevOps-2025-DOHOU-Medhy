@@ -3,6 +3,7 @@ name: Main pipeline
 on:
   workflow_run:
     workflows: [ "Tests" ]
+    branches:
     types:
       - completed
 
