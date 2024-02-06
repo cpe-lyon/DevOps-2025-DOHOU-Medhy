@@ -53,7 +53,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.api
           push: ${{ github.ref == 'refs/heads/main' }}
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/api:${{ DOCKERHUB_TAG }}
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/api:${{ env.DOCKERHUB_TAG }}
 
       - name: Build image and push database
         uses: docker/build-push-action@v3
@@ -61,7 +61,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.db
           push: ${{ github.ref == 'refs/heads/main' }}
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/database:${{ DOCKERHUB_TAG }}
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/database:${{ env.DOCKERHUB_TAG }}
           
 
       - name: Build image and push httpd
@@ -70,4 +70,4 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.http
           push: ${{ github.ref == 'refs/heads/main' }}
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd:${{ DOCKERHUB_TAG }}
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd:${{ env.DOCKERHUB_TAG }}
