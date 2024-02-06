@@ -1,31 +1,15 @@
 on:
+  workflow_run:
+    workflows:
+      - "test.yml"
+    types:
+      - completed
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
 
 name: Release pipeline
 jobs:
-  test-backend:
-    runs-on: ubuntu-22.04
-    steps:
-      #checkout your github code using actions/checkout@v2.5.0
-      - uses: actions/checkout@v2.5.0
-
-      #do the same with another action (actions/setup-java@v3) that enable to setup jdk 17
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: "temurin" # See 'Supported distributions' for available options
-          java-version: "21"
-      #finally build your app with the latest command
-      - name: Build and test with Maven
-        working-directory: backend-api
-        run: mvn clean verify
-
-      - name: Send to sonarcloud for static analysis
-        working-directory: backend-api
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-  
   # define job to build and publish docker image
   build-and-push-docker-image-release:
     needs: test-backend
@@ -49,7 +33,7 @@ jobs:
         with:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.api
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/api:${{ env.DOCKERHUB_TAG }}
 
       - name: Build image and push database
@@ -57,7 +41,7 @@ jobs:
         with:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.db
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/database:${{ env.DOCKERHUB_TAG }}
           
 
@@ -66,5 +50,5 @@ jobs:
         with:
           # relative path to the place where source code with Dockerfile is located
           file: ./Dockerfile.http
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd:${{ env.DOCKERHUB_TAG }}
