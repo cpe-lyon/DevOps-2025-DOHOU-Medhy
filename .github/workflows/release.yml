@@ -1,12 +1,9 @@
-name: Main pipeline
-
 on:
-  #to begin you want to launch this job in main and develop
   push:
-    branches: 
-      - main
-  pull_request:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
+name: Release pipeline
 jobs:
   test-backend:
     runs-on: ubuntu-22.04
@@ -30,7 +27,7 @@ jobs:
         run: mvn -B verify sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
   
   # define job to build and publish docker image
-  build-and-push-docker-image-nightly:
+  build-and-push-docker-image-release:
     needs: test-backend
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-22.04

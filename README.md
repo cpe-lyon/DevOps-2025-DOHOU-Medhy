@@ -129,3 +129,18 @@ services:
 networks:
     app-network:
 ```
+
+## Day 2 - Github Actions
+
+## Setup GitHub Actions
+
+### Unit tests? Component tests?
+
+Unit tests are meant to test small parts of a class logic, such as a function, or a constructor.
+
+Component tests (or integrations test), are for testing the logic of the application itself, so it can test more functions and multiple classes and how they interact with each others.
+
+### What are testcontainers ?
+
+Testcontainers is a library that leverages the docker software to spawn databases/external services dynamically, for testing purposes. This way, we can test our code without mocking these external srevices, allowing us to test integration in a real life scenario.
+
