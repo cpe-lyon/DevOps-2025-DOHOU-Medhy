@@ -20,7 +20,12 @@ jobs:
           java-version: "21"
       #finally build your app with the latest command
       - name: Build and test with Maven
-        run: cd backend-api && mvn clean verify
+        working-directory: backend-api
+        run: mvn clean verify
+
+      - name: Send to sonarcloud for static analysis
+        working-directory: backend-api
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=${{ SONAR_PROJECT_KEY }} -Dsonar.organization=${{ SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
   
   # define job to build and publish docker image
   build-and-push-docker-image:
