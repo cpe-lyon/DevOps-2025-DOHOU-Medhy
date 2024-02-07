@@ -9,5 +9,6 @@
     - httpd
     - db
     - api
+    - front
   vars:
     app_docker_network_name: "app-network"

@@ -1,2 +1,19 @@
 ---
-# tasks file for roles/front
+- name: Pull and start frontend container
+  community.docker.docker_container:
+    recreate: true
+    name: "{{ frontend_container_name }}"
+    image: "medhydohoucpe/frontend:main"
+    networks:
+      - name: "{{ app_docker_network_name }}"
+
+- name: Check frontend container status
+  community.docker.docker_container_info:
+    name: "{{ frontend_container_name }}"
+  register: result
+  notify: Check database container inspection result
+
+- name: Fail if frontend container isn't running
+  ansible.builtin.fail:
+    msg: "The frontend container failed to start : exit code {{ result.container.State.ExitCode }} (error : {{ result.container.State.Error }})"
+  when: not result.container.State.Running
