@@ -3,7 +3,7 @@
   community.docker.docker_container:
     recreate: true
     name: "{{ frontend_container_name }}"
-    image: "medhydohoucpe/frontend:main"
+    image: "medhydohoucpe/front:main"
     networks:
       - name: "{{ app_docker_network_name }}"
 
