@@ -6,6 +6,7 @@ all:
     api_container_name: backend
     database_container_name: database
     httpd_container_name: httpd
+    frontend_container_name: frontend
     # These variables could or rather should be vaulted...
     db_user: "usr"
     db_password: "pwd"
