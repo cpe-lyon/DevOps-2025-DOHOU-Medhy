@@ -2,6 +2,7 @@
 - name: Pull and start api container
   community.docker.docker_container:
     recreate: true
+    pull: true
     name: "{{ api_container_name }}"
     image: "medhydohoucpe/api:main"
     env:

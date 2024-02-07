@@ -2,6 +2,7 @@
 - name: Pull and start frontend container
   community.docker.docker_container:
     recreate: true
+    pull: true
     name: "{{ frontend_container_name }}"
     image: "medhydohoucpe/front:main"
     networks:

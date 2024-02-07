@@ -2,6 +2,7 @@
 - name: Pull and start database container
   community.docker.docker_container:
     recreate: true
+    pull: true
     name: "{{ database_container_name }}"
     image: "medhydohoucpe/database:main"
     env:

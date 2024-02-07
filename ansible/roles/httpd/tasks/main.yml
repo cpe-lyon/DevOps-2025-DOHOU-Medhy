@@ -2,6 +2,7 @@
 - name: Pull and start httpd container
   community.docker.docker_container:
     recreate: true
+    pull: true
     name: "{{ httpd_container_name }}"
     image: "medhydohoucpe/httpd:main"
     published_ports:
