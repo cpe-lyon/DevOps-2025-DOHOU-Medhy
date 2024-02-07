@@ -18,5 +18,5 @@ jobs:
 
       - name: Run ansible-lint on our playbook
         run: |
-          ansible-galaxy collection install -r requirements.yml
+          ansible-galaxy collection install -r ./ansible/requirements.yml
           ansible-lint -v -s --project-dir ./ansible
