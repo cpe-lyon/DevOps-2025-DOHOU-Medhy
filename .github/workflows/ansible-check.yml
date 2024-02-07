@@ -9,11 +9,7 @@ on:
 jobs:
   ansible-lint:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: ../ansible
     steps:
-
       - name: Install ansible-lint with pip
         run: |
           sudo apt update
