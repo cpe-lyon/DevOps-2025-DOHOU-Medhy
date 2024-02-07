@@ -7,5 +7,11 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v2.5.0
+            - name: Automatically accept new HostKey
+              run: echo "StrictHostKeyChecking=accept-new" > ~/.ssh/config
             - name: Deploy to prod
-              uses: ${{ github.run.workflow_runs[needs.ansible-check.outputs.success].conclusion == 'success' }}
+              if: ${{ github.run.workflow_runs[needs.ansible-check.outputs.success].conclusion == 'success' }}
+              uses: dawidd6/action-ansible-playbook@v2
+              with:
+                directory: ./ansible
+                playbook: playbook.yml
