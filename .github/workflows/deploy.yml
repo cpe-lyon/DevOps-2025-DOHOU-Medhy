@@ -19,3 +19,4 @@ jobs:
                 playbook: playbook.yml
                 known_hosts: |
                   medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2lupj45sVom4e+f+1ifTxJTfW2TsKqyClld2s4kUvW
+                inventory: inventories/setup.yml
