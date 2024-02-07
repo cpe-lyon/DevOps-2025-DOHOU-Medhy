@@ -1,4 +1,4 @@
-name: Ansible checks
+name: ansible-check
 on:
   push:
     paths:
