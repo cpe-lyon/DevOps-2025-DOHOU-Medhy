@@ -1,0 +1,18 @@
+name: Ansible checks
+on:
+  push:
+    paths:
+      - "ansible/**"
+  pull_request:
+
+jobs:
+  ansible-lint:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./ansible
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main
