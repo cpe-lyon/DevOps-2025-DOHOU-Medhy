@@ -2,7 +2,6 @@
 all:
   vars:
     ansible_user: centos
-    ansible_ssh_private_key_file: /home/medhy/.ssh/id_ansible_tp
     api_container_name: backend
     database_container_name: database
     httpd_container_name: httpd
