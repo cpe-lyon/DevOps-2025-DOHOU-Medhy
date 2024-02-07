@@ -12,8 +12,6 @@ jobs:
     defaults:
       run:
         working-directory: ./ansible
-    outputs:
-      success: ${{ job.status == 'success' }}
 
     steps:
       - name: Checkout code
