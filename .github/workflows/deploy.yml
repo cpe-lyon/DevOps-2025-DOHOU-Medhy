@@ -7,11 +7,11 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v2.5.0
-            - name: Automatically accept new HostKey
-              run: touch ~/.ssh/config && echo "StrictHostKeyChecking=accept-new" > ~/.ssh/config
             - name: Deploy to prod
               if: ${{ github.run.workflow_runs[needs.ansible-check.outputs.success].conclusion == 'success' }}
               uses: dawidd6/action-ansible-playbook@v2
               with:
                 directory: ./ansible
                 playbook: playbook.yml
+                known_hosts: |
+                  medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2lupj45sVom4e+f+1ifTxJTfW2TsKqyClld2s4kUvW
