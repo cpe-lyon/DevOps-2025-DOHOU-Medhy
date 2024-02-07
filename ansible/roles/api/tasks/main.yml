@@ -1,28 +1,24 @@
 ---
-- name: Create network if it doesn't exist
-  community.docker.docker_network:
-    name: "{{ app_docker_network_name }}"
-
 - name: Pull and start api container
   community.docker.docker_container:
     recreate: true
     name: backend
     image: "medhydohoucpe/api:main"
     env:
-      DATABASE_USER: usr
-      DATABASE_PASSWORD: pwd
-      DATABASE_NAME: db
-      DATABASE_URL: database
-      DATABASE_PORT: "5432"
+      DATABASE_USER: "{{ db_user }}"
+      DATABASE_PASSWORD: "{{ db_password }}"
+      DATABASE_NAME: "{{ db_database_name }}"
+      DATABASE_URL: "{{ db_url }}"
+      DATABASE_PORT: "{{ db_port }}"
     networks:
       - name: "{{ app_docker_network_name }}"
 
-- name: Check database container status
-  docker_container_info:
+- name: Check api container status
+  community.docker.docker_container_info:
     name: backend
   register: result
 
 - name: Fail if api container isn't running
-  fail:
+  ansible.builtin.fail:
     msg: "The api container failed to start : exit code {{ result.container.State.ExitCode }} (error : {{ result.container.State.Error }})"
   when: not result.container.State.Running

@@ -3,6 +3,12 @@ all:
   vars:
     ansible_user: centos
     ansible_ssh_private_key_file: /home/medhy/.ssh/id_ansible_tp
+    # These variables could or rather should be vaulted...
+    db_user: "usr"
+    db_password: "pwd"
+    db_database_name: "db"
+    db_url: "database"
+    db_port: "5432"
   children:
     prod:
       hosts: medhy.dohou.takima.cloud

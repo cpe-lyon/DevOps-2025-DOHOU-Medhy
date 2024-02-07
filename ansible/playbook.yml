@@ -5,6 +5,7 @@
   become: true
   roles:
     - docker
+    - create_app_network
     - httpd
     - db
     - api
