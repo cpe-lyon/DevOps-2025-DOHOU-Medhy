@@ -2,7 +2,7 @@
 - name: Pull and start database container
   community.docker.docker_container:
     recreate: true
-    name: database
+    name: "{{ database_container_name }}"
     image: "medhydohoucpe/database:main"
     env:
       POSTGRES_USER: "{{ db_user }}"
@@ -13,7 +13,7 @@
 
 - name: Check database container status
   community.docker.docker_container_info:
-    name: database
+    name: "{{ database_container_name }}"
   register: result
   notify: Check database container inspection result
 

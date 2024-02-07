@@ -2,7 +2,7 @@
 - name: Pull and start httpd container
   community.docker.docker_container:
     recreate: true
-    name: httpd
+    name: "{{ httpd_container_name }}"
     image: "medhydohoucpe/httpd:main"
     published_ports:
       - "80:80"
@@ -11,7 +11,7 @@
 
 - name: Check httpd container status
   community.docker.docker_container_info:
-    name: httpd
+    name: "{{ httpd_container_name }}"
   register: result
 
 - name: Fail if httpd container isn't running

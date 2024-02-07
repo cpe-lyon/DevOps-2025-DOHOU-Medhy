@@ -2,7 +2,7 @@
 - name: Pull and start api container
   community.docker.docker_container:
     recreate: true
-    name: backend
+    name: "{{ api_container_name }}"
     image: "medhydohoucpe/api:main"
     env:
       DATABASE_USER: "{{ db_user }}"
@@ -15,7 +15,7 @@
 
 - name: Check api container status
   community.docker.docker_container_info:
-    name: backend
+    name: "{{ api_container_name }}"
   register: result
 
 - name: Fail if api container isn't running

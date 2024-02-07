@@ -3,11 +3,14 @@ all:
   vars:
     ansible_user: centos
     ansible_ssh_private_key_file: /home/medhy/.ssh/id_ansible_tp
+    api_container_name: backend
+    database_container_name: database
+    httpd_container_name: httpd
     # These variables could or rather should be vaulted...
     db_user: "usr"
     db_password: "pwd"
     db_database_name: "db"
-    db_url: "database"
+    db_url: "{{ database_container_name }}"
     db_port: "5432"
   children:
     prod:
