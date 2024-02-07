@@ -1,0 +1,12 @@
+---
+- name: Install docker on all hosts
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - docker
+    - httpd
+    - db
+    - api
+  vars:
+    app_docker_network_name: "app-network"

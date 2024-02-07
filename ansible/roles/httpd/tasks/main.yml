@@ -1,0 +1,14 @@
+---
+- name: Create network if it doesn't exist
+  community.docker.docker_network:
+    name: "{{ app_docker_network_name }}"
+
+- name: Pull and start httpd container
+  community.docker.docker_container:
+    recreate: true
+    name: httpd
+    image: "medhydohoucpe/httpd:main"
+    published_ports:
+      - "80:80"
+    networks:
+      - name: "{{ app_docker_network_name }}"

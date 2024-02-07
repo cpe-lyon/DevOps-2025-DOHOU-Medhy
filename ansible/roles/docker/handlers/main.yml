@@ -1,0 +1,6 @@
+---
+- name: Ensure Docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+  tags: docker

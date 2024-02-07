@@ -1,0 +1,27 @@
+---
+- name: Create network if it doesn't exist
+  community.docker.docker_network:
+    name: "{{ app_docker_network_name }}"
+
+- name: Pull and start database container
+  community.docker.docker_container:
+    recreate: true
+    name: database
+    image: "medhydohoucpe/database:main"
+    env:
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: db
+    networks:
+      - name: "{{ app_docker_network_name }}"
+
+- name: Check database container status
+  docker_container_info:
+    name: database
+  register: result
+  notify: Check database container inspection result
+
+- name: Fail if database container isn't running
+  fail:
+    msg: "The database container failed to start : exit code {{ result.container.State.ExitCode }} (error : {{ result.container.State.Error }})"
+  when: not result.container.State.Running

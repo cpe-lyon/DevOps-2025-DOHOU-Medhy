@@ -144,3 +144,6 @@ Component tests (or integrations test), are for testing the logic of the applica
 
 Testcontainers is a library that leverages the docker software to spawn databases/external services dynamically, for testing purposes. This way, we can test our code without mocking these external srevices, allowing us to test integration in a real life scenario.
 
+## Day 3 - Ansible
+
+## Introduction

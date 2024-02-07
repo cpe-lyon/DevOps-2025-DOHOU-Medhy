@@ -1,0 +1,40 @@
+---
+
+- name: Add repo docker
+  ansible.builtin.yum_repository:
+    name: docker
+    description: Docker repository for Yum
+    baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    gpgcheck: true
+    enabled: true
+
+
+- name: Install device-mapper-persistent-data
+  ansible.builtin.yum:
+    name: device-mapper-persistent-data
+    state: latest
+
+- name: Install lvm2
+  ansible.builtin.yum:
+    name: lvm2
+    state: latest
+
+- name: Install Docker
+  ansible.builtin.yum:
+    name: docker-ce
+    state: present
+  notify:
+    - Ensure Docker is running
+
+- name: Install python3
+  ansible.builtin.yum:
+    name: python3
+    state: present
+
+- name: Install docker with Python 3
+  ansible.builtin.pip:
+    name: docker
+    executable: pip3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

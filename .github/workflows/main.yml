@@ -50,3 +50,11 @@ jobs:
           file: ./Dockerfile.http
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd:${{ env.DOCKERHUB_TAG }}
+
+      - name: Build image and push front
+        uses: docker/build-push-action@v3
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          file: ./front/Dockerfile
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/front:${{ env.DOCKERHUB_TAG }}
