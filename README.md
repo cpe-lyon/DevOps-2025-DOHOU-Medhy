@@ -446,18 +446,17 @@ For the containers, I will only describe the httpd container. As all the other o
 
 ### Continuous deployment
 
-For the deployment, I decided to take a more pragmatic and safe deployment approach : our continuous deployment pipeline only redeploy if we make changes in our ansible directory, or if it's manually triggered. I do not think this is the best way to do it, but in my current repository setup (and with the limited knowledge I have of GitHub Actions), that's the best I could come up with.
-
 Before deploying, we run a Ansible Check pipeline that lints our playbook to ensure that there's no issue with it prior to deployment. If it fails, nothing is deployed to our environment, ensuring we do not run pipeline for nothing.
 
 Here's the ansible linting pipeline:
 
 ```yml
 name: ansible-check
+
+# We only launch this job if we pushed on main, if we're on a pull request (to ensure no
+# regressions are introduced), or if it's manually triggered 
 on:
   push:
-    paths:
-      - "ansible/**"
     branches:
       - main
   pull_request:
@@ -466,22 +465,67 @@ on:
 jobs:
   ansible-lint:
     runs-on: ubuntu-22.04
+    # We set the working directory of this pipeline to our ansible dir
     defaults:
       run:
         working-directory: ./ansible
-
+    # We need to lint the vaulted files too
+    env:
+      VAULT_PASS: ${{ secrets.VAULT_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
-
+      # We install ansible-lint
       - name: Install ansible-lint with pip
         run: |
           sudo apt update
           sudo apt install pip git
           pip install ansible-core ansible-lint
-
+      # We copy our VAULT_PASSWORD so as to allow ansible-lint to decrypt and lint them.
+      # We also install our playbooks' dependencies
       - name: Run ansible-lint on our playbook
         run: |
+          echo ${VAULT_PASS} > .vault_password
           ansible-galaxy collection install -r requirements.yml
-          ansible-lint -v -s --project-dir .
+          ANSIBLE_VAULT_PASSWORD_FILE=.vault_password ansible-lint -v -s --project-dir .
 ```
+
+Once this step is done, our deployment pipeline is triggered :
+
+```yml
+name: Deploy to production
+
+# We only deploy to production if... we're on the main branch, and the ansible-check has passed
+# It is not necessary for now to add a dependency to the test pipeline because it won't 
+# publish our images if it doesn't pass
+on:
+  workflow_run:
+    workflows: ["ansible-check"]
+    branches: [main]
+    types: 
+      - completed
+  workflow_dispatch:
+
+jobs:
+    deploy-to-prod:
+        runs-on: ubuntu-22.04
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2.5.0
+            - name: Deploy to prod
+              # We only deploy to prod if the ansible-check was successful
+              if: ${{ github.event.workflow_run.conclusion == 'success' }}
+              # We use the ansible playbook action with our private key as well as our vault password.
+              uses: dawidd6/action-ansible-playbook@v2
+              with:
+                directory: ./ansible
+                playbook: playbook.yml
+                key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+                vault_password: ${{ secrets.VAULT_PASSWORD }}
+                # We give the fingerprint of our servers, to avoid DNS Redirection attacks
+                known_hosts: |
+                  medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2lupj45sVom4e+f+1ifTxJTfW2TsKqyClld2s4kUvW
+                options: |
+                  --inventory ./inventories/setup.yml
+                requirements: ./requirements.yml
+``` 

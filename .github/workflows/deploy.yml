@@ -1,3 +1,8 @@
+name: Deploy to production
+
+# We only deploy to production if... we're on the main branch, and the ansible-check has passed
+# It is not necessary for now to add a dependency to the test pipeline because it won't 
+# publish our images if it doesn't pass
 on:
   workflow_run:
     workflows: ["ansible-check"]
@@ -15,12 +20,14 @@ jobs:
             - name: Deploy to prod
               # We only deploy to prod if the ansible-check was successful
               if: ${{ github.event.workflow_run.conclusion == 'success' }}
+              # We use the ansible playbook action with our private key as well as our vault password.
               uses: dawidd6/action-ansible-playbook@v2
               with:
                 directory: ./ansible
                 playbook: playbook.yml
                 key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
                 vault_password: ${{ secrets.VAULT_PASSWORD }}
+                # We give the fingerprint of our servers, to avoid DNS Redirection attacks
                 known_hosts: |
                   medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2lupj45sVom4e+f+1ifTxJTfW2TsKqyClld2s4kUvW
                 options: |

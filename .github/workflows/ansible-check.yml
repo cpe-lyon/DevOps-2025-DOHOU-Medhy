@@ -12,21 +12,24 @@ on:
 jobs:
   ansible-lint:
     runs-on: ubuntu-22.04
+    # We set the working directory of this pipeline to our ansible dir
     defaults:
       run:
         working-directory: ./ansible
+    # We need to lint the vaulted files too
     env:
       VAULT_PASS: ${{ secrets.VAULT_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
-
+      # We install ansible-lint
       - name: Install ansible-lint with pip
         run: |
           sudo apt update
           sudo apt install pip git
           pip install ansible-core ansible-lint
-
+      # We copy our VAULT_PASSWORD so as to allow ansible-lint to decrypt and lint them.
+      # We also install our playbooks' dependencies
       - name: Run ansible-lint on our playbook
         run: |
           echo ${VAULT_PASS} > .vault_password
