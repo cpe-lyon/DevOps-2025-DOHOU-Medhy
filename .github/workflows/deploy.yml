@@ -18,6 +18,7 @@ jobs:
                 directory: ./ansible
                 playbook: playbook.yml
                 key: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+                vault_password: ${{ secrets.VAULT_PASSWORD }}
                 known_hosts: |
                   medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2lupj45sVom4e+f+1ifTxJTfW2TsKqyClld2s4kUvW
                 options: |

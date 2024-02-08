@@ -3,6 +3,8 @@
   hosts: all
   gather_facts: false
   become: true
+  vars_files:
+    - vars/secrets.yml
   roles:
     - docker
     - create_app_network
@@ -12,3 +14,10 @@
     - front
   vars:
     app_docker_network_name: "app-network"
+    api_container_name: backend
+    database_container_name: database
+    httpd_container_name: httpd
+    frontend_container_name: frontend
+    # These variables could or rather should be vaulted...
+    db_url: "{{ database_container_name }}"
+    db_port: "5432"

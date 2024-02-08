@@ -1,7 +1,7 @@
 ---
 
 - name: Add repo docker
-  # We use the builtin yum repository module to install the official docker 
+  # We use the builtin yum repository module to install the official docker
   # RHEL repo
   ansible.builtin.yum_repository:
     name: docker

@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - "ansible/**"
+    branches:
+      - main
   pull_request:
   workflow_dispatch:
 
@@ -25,5 +27,6 @@ jobs:
 
       - name: Run ansible-lint on our playbook
         run: |
+          cat ${{secrets.VAULT_PASSWORD}} >> .ansible_vault_pass
           ansible-galaxy collection install -r requirements.yml
-          ansible-lint -v -s --project-dir .
+          ansible-lint -v -s --exclude ./vars/* --project-dir .
