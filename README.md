@@ -453,10 +453,11 @@ Here's the ansible linting pipeline:
 ```yml
 name: ansible-check
 
-# We only launch this job if we pushed on main, if we're on a pull request (to ensure no
+# We only launch this job if we're on main and the Main pipeline has succedded, if we're on a pull request (to ensure no
 # regressions are introduced), or if it's manually triggered 
 on:
-  push:
+  workflow_run:
+    workflows: ["Main pipeline"]
     branches:
       - main
   pull_request:
@@ -473,6 +474,9 @@ jobs:
     env:
       VAULT_PASS: ${{ secrets.VAULT_PASSWORD }}
     steps:
+      - name: Fail if main pipeline failed
+        if: ${{ github.event_name == 'pull_request' && github.event_name != 'workflow_dispatch' && github.event.workflowgithub.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
       - name: Checkout code
         uses: actions/checkout@v2.5.0
       # We install ansible-lint
