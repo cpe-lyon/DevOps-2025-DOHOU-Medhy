@@ -4,6 +4,7 @@ on:
     branches: [main]
     types: 
       - completed
+  workflow_dispatch:
 
 jobs:
     deploy-to-prod:
@@ -12,6 +13,7 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v2.5.0
             - name: Deploy to prod
+              # We only deploy to prod if the ansible-check was successful
               if: ${{ github.event.workflow_run.conclusion == 'success' }}
               uses: dawidd6/action-ansible-playbook@v2
               with:

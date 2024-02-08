@@ -1,8 +1,9 @@
 name: ansible-check
+
+# We only launch this job if we pushed on main, if we're on a pull request (to ensure no
+# regressions are introduced), or if it's manually triggered 
 on:
   push:
-    paths:
-      - "ansible/**"
     branches:
       - main
   pull_request:
@@ -14,7 +15,8 @@ jobs:
     defaults:
       run:
         working-directory: ./ansible
-
+    env:
+      VAULT_PASS: ${{ secrets.VAULT_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
@@ -27,5 +29,6 @@ jobs:
 
       - name: Run ansible-lint on our playbook
         run: |
+          echo ${VAULT_PASS} > .vault_password
           ansible-galaxy collection install -r requirements.yml
-          ansible-lint -v -s --exclude ./vars/* --project-dir .
+          ANSIBLE_VAULT_PASSWORD_FILE=.vault_password ansible-lint -v -s --project-dir .
