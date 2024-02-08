@@ -29,7 +29,7 @@ jobs:
                 vault_password: ${{ secrets.VAULT_PASSWORD }}
                 # We give the fingerprint of our servers, to avoid DNS Redirection attacks
                 known_hosts: |
-                  medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2lupj45sVom4e+f+1ifTxJTfW2TsKqyClld2s4kUvW
+                  medhy.dohou.takima.cloud ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGOWcoyHWc8qNdZbf/+NL/faVWdYAdchHep26pjro5No
                 options: |
                   --inventory ./inventories/setup.yml
                 requirements: ./requirements.yml
