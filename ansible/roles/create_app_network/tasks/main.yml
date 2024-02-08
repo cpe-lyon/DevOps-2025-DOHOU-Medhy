@@ -1,4 +1,5 @@
 ---
 - name: Create network if it doesn't exist
+  # We use the docker_network module to ensure the existence of this network
   community.docker.docker_network:
     name: "{{ app_docker_network_name }}"

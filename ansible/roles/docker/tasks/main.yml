@@ -1,15 +1,20 @@
 ---
 
 - name: Add repo docker
+  # We use the builtin yum repository module to install the official docker 
+  # RHEL repo
   ansible.builtin.yum_repository:
     name: docker
     description: Docker repository for Yum
+    # This is where our packages lives
     baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    # Since we want to avoid MITM/Poisoned DNS attacks, we use GPG keys to ensure the package are correct
     gpgkey: https://download.docker.com/linux/centos/gpg
     gpgcheck: true
+    # We enable this repository so we can download docker from there
     enabled: true
 
-
+# We install a bunch of prerequisites
 - name: Install device-mapper-persistent-data
   ansible.builtin.yum:
     name: device-mapper-persistent-data
@@ -20,10 +25,13 @@
     name: lvm2
     state: latest
 
+# We leverage the yum module to install the docker compute engine and python 3 (only python 2 is bundled with RHEL 7.2)
 - name: Install Docker
   ansible.builtin.yum:
     name: docker-ce
     state: present
+  # We want to ensure the docker service is running after the end of the playbook
+  # So we use a handler for that
   notify:
     - Ensure Docker is running
 
@@ -32,6 +40,8 @@
     name: python3
     state: present
 
+# We use the pip module to install the docker package (we also specify the python3 binary path as a var
+# since we want to install the module for python3)
 - name: Install docker with Python 3
   ansible.builtin.pip:
     name: docker

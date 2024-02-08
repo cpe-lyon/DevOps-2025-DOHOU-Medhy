@@ -1,5 +1,5 @@
 ---
-- name: Install docker on all hosts
+- name: Install containers on all hosts
   hosts: all
   gather_facts: false
   become: true

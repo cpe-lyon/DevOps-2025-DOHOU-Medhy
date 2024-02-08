@@ -1,5 +1,6 @@
 name: Main pipeline
 
+# We only start building our docker containers if the tests pipeline was ran
 on:
   workflow_run:
     workflows: [ "Tests" ]
@@ -7,25 +8,30 @@ on:
     types:
       - completed
 
+
 jobs:
-  # define job to build and publish docker image
   build-and-push-docker-image-nightly:
+    # We only run this job if the previous pipeline was sucessful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    # run only when code is compiling and tests are passing
     runs-on: ubuntu-22.04
+    # Our docker tag is our branch name, this was supposed to be used for the 
+    # "push on tag" pipeline that I was trying to make
     env:
       DOCKERHUB_TAG: ${{ github.ref_name }}
     # steps to perform in job
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
-
+      # This actions allows us to authenticate to DockerHub, so that we may
+      # Push our images on our repository. We obviously use secrets here.
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # The next 3 jobs are similar, we use the build-push action to build then
+      # push the image to our docker repository
       - name: Build image and push backend
         uses: docker/build-push-action@v3
         with:
@@ -55,6 +61,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           # relative path to the place where source code with Dockerfile is located
+          # Here we use another build context, since our Dockerfile is located in a sub-directory
           context: ./front
           file: ./front/Dockerfile
           push: ${{ github.ref == 'refs/heads/main' }}
